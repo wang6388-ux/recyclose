@@ -35,7 +35,6 @@ body {
   margin: 0;
 }
 
-/* 图1风格 pin marker */
 .drop-pin {
   width: 26px;
   height: 26px;
@@ -59,7 +58,6 @@ body {
   left: 7px;
 }
 
-/* 用户定位点 */
 .user-dot {
   width: 12px;
   height: 12px;
@@ -69,7 +67,6 @@ body {
   border: 3px solid rgba(255, 255, 255, 0.95);
 }
 
-/* 让 mapbox logo/归因更贴近图1的左下角位置 */
 .mapboxgl-ctrl-bottom-left {
   margin-left: 10px;
   margin-bottom: 10px;
