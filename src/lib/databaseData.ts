@@ -701,7 +701,6 @@ export const ITEMS: DbItem[] = [
   },
 ];
 
-// ---- helpers (必须导出，给 pages 用) ----
 export function isCategorySlug(slug: string) {
   return CATEGORIES.some((c) => c.key === (slug as CategoryKey));
 }
