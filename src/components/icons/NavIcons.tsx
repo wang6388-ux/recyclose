@@ -9,14 +9,6 @@ function svgPropsBase(className?: string) {
   } as const;
 }
 
-/**
- * 注意：
- * 你给的 Nav SVG 里 fill/stroke 写死了颜色
- * 我这里统一改成 currentColor，方便 active/inactive 控色
- *
- * 如果你不想要 SVG 里那一堆文字 path
- * 我可以再给你精简版，只保留“图标主体”
- */
 
 export function DropoffNavIcon({ size = 28, className, ...props }: IconProps) {
   return (
@@ -29,8 +21,6 @@ export function DropoffNavIcon({ size = 28, className, ...props }: IconProps) {
       {...svgPropsBase(className)}
       {...props}
     >
-      {/* 这里是你给的原 SVG，唯一修改是把 fill/stroke 改成 currentColor */}
-      {/* 我先只保留“圆 + 方框 + 箭头”这块，避免把底部文字一起塞进 Nav */}
       <circle cx="24" cy="22.0002" r="19.1667" fill="currentColor" stroke="currentColor" strokeWidth="2" />
       <rect x="11.9286" y="9.92871" width="24.1429" height="24.1429" rx="4.5" fill="white" stroke="currentColor" />
       <path d="M18.72 22.0005L24 27.2805L29.28 22.0005" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
@@ -50,7 +40,6 @@ export function DatabaseNavIcon({ size = 28, className, ...props }: IconProps) {
       {...svgPropsBase(className)}
       {...props}
     >
-      {/* 保留右侧“clipboard”图标部分 */}
       <path
         d="M25 2.49658C26.0792 2.49658 26.9975 3.18888 27.3408 4.15771L27.6357 4.98975H33.75C34.444 4.98975 34.9999 5.549 35 6.23291V23.686C35 24.37 34.4441 24.9292 33.75 24.9292H16.25C15.5559 24.9292 15 24.37 15 23.686V6.23291C15.0001 5.549 15.556 4.98975 16.25 4.98975H22.3643L22.6592 4.15771C23.0025 3.18888 23.9208 2.49658 25 2.49658Z"
         stroke="currentColor"
@@ -98,7 +87,6 @@ export function AccountNavIcon({ size = 28, className, ...props }: IconProps) {
       {...svgPropsBase(className)}
       {...props}
     >
-      {/* 只保留“人像 + 齿轮”图标主体部分 */}
       <path
         d="M21.5 5C20.1739 5 18.9021 5.52678 17.9645 6.46447C17.0268 7.40215 16.5 8.67392 16.5 10C16.5 11.3261 17.0268 12.5979 17.9645 13.5355C18.9021 14.4732 20.1739 15 21.5 15C22.8261 15 24.0979 14.4732 25.0355 13.5355C25.9732 12.5979 26.5 11.3261 26.5 10C26.5 8.67392 25.9732 7.40215 25.0355 6.46447C24.0979 5.52678 22.8261 5 21.5 5Z"
         fill="currentColor"
