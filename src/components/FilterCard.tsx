@@ -36,13 +36,10 @@ export default function FilterCard(props: {
 }) {
   const { value, onApply, onClear } = props;
 
-  // 在卡片内编辑：点 Apply 才真正生效
   const [draftService, setDraftService] = useState<ServiceType>(value.serviceType);
   const [draftPickup, setDraftPickup] = useState<boolean>(value.pickup);
   const [draftCats, setDraftCats] = useState<Set<string>>(() => new Set(value.categories));
 
-  // 如果外部 value 变化，你希望同步 draft 的话可以加 effect
-  // 这里先保持简单：用户打开卡片后在内部编辑
 
   const selectedCount = useMemo(() => draftCats.size, [draftCats]);
 
@@ -74,7 +71,6 @@ export default function FilterCard(props: {
     <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
       <div className="text-sm font-semibold text-neutral-900">Filter</div>
 
-      {/* Service Type */}
       <div className="mt-4">
         <div className="text-sm font-semibold text-neutral-900">Service Type</div>
         <div className="mt-3 flex items-center gap-6">
@@ -101,7 +97,6 @@ export default function FilterCard(props: {
           </label>
         </div>
 
-        {/* Pick Up */}
         <div className="mt-3 flex items-center justify-between rounded-xl border border-neutral-200 px-3 py-2">
           <div className="text-sm text-neutral-800">Pick Up</div>
 
@@ -123,8 +118,7 @@ export default function FilterCard(props: {
           </button>
         </div>
       </div>
-
-      {/* Category */}
+      
       <div className="mt-5">
         <div className="flex items-center justify-between">
           <div className="text-sm font-semibold text-neutral-900">Category</div>
@@ -149,7 +143,6 @@ export default function FilterCard(props: {
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="mt-6 grid grid-cols-2 gap-3">
         <button
           type="button"
