@@ -36,7 +36,6 @@ export default function BottomSheet({
     return "h-[78vh]";
   }, [snap]);
 
-  // ✅ 给 hidden 增加“彻底隐藏”的视觉与布局保障
   const hiddenClass = snap === "hidden" ? "opacity-0 overflow-hidden" : "opacity-100";
 
   function onPointerDown(e: React.PointerEvent) {
@@ -48,7 +47,6 @@ export default function BottomSheet({
     if (startYRef.current == null) return;
     const dy = e.clientY - startYRef.current;
 
-    // 下滑：full -> half -> collapsed -> hidden
     if (dy > 60) {
       if (snap === "full") setSnap("half");
       else if (snap === "half") setSnap("collapsed");
@@ -58,7 +56,6 @@ export default function BottomSheet({
       return;
     }
 
-    // 上滑：hidden -> collapsed -> half -> full
     if (dy < -60) {
       if (snap === "hidden") setSnap("collapsed");
       else if (snap === "collapsed") setSnap("half");
@@ -78,7 +75,6 @@ export default function BottomSheet({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -95,7 +91,6 @@ export default function BottomSheet({
           hiddenClass,
         ].join(" ")}
       >
-        {/* drag handle area */}
         <div
           className="px-4 pt-3 pb-2 select-none touch-none"
           onPointerDown={onPointerDown}
@@ -106,12 +101,10 @@ export default function BottomSheet({
           <div className="mt-2 text-[20px] font-semibold leading-none text-[var(--brand-900)]">{title}</div>
         </div>
 
-        {/* content */}
         <div
           ref={contentRef as any}
           className="h-[calc(100%-56px)] overflow-y-auto px-4"
           style={{
-            // ✅ 这里不要额外加 safe-area：bottomOffset 已经负责把 sheet 抬到 nav 之上
             paddingBottom: "12px",
           }}
         >
