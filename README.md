@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RecyClose
 
-## Getting Started
+RecyClose is a personal side project exploring how a mobile-first interface can make recycling drop-off information easier to discover and understand.  
+The project is built in collaboration with an independent UI/UX designer, with a strong focus on layout, interaction flow, and map-based exploration.
 
-First, run the development server:
+This is an early-stage prototype rather than a production system.
 
+---
+
+## What it does (current state)
+
+### Map-based drop-off search
+Browse recycling drop-off centers on an interactive Mapbox map.
+
+### Recycling item database
+A structured database of common recyclable items, grouped by category, with images and short explanations.
+
+### Saved items (local)
+Users can save database items locally in the browser (no account required).
+
+### Mobile-first UI
+Designed and developed primarily for small screens, inspired by native map apps.
+
+---
+
+## What this project is (and isn’t)
+
+- Drop-off locations and recycling data are **mock / placeholder data**
+- There is **no backend or authentication**
+- Saved items use **local browser storage only**
+- Images are manually added assets, not dynamically fetched
+- The project focuses on **UI, interaction, and structure**, not data completeness
+
+---
+
+## Tech stack
+
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Mapbox GL JS
+
+---
+
+## Project structure (high-level)
+
+- `app/(main)/dropoff`  
+  Map-based drop-off search experience, including the bottom sheet and map interactions.
+
+- `app/(main)/database`  
+  Recycling item database pages (home, category, and item detail).
+
+- `lib/databaseData.ts`  
+  Static database definitions for recycling categories and items.
+
+- `lib/savedDb.ts`  
+  Local save / unsave logic using browser storage.
+
+---
+
+## Getting started (local)
+
+### Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+npm install
