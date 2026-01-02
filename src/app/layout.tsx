@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-import AppShell from "@/components/AppShell";
+import ClientShell from "@/components/ClientShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,17 +18,11 @@ export const metadata: Metadata = {
   description: "App-style recycling helper",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <AppShell>{children}</AppShell>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ClientShell>{children}</ClientShell>
       </body>
     </html>
   );

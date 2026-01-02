@@ -1,173 +1,174 @@
+// app/database/[slug]/page.tsx
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
-import { useParams } from "next/navigation";
-import SaveButton from "@/components/SaveButton";
-import { findItemBySlug } from "@/data/databaseCategories";
+import { useParams, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import {
+  isCategorySlug,
+  getCategoryBySlug,
+  getItemsByCategory,
+  getItemBySlug,
+} from "@/lib/databaseData";
+import { toggleSaved, useSavedSlugs } from "@/lib/savedDb";
 
-type Article = {
-  examplePhotos: number;
-  blocks: Array<
-    | { kind: "text"; heading: string; body: string }
-    | { kind: "button"; label: string; href: string }
-  >;
-};
-
-function getArticle(slug: string): Article | null {
-  const map: Record<string, Article> = {
-    styrofoam: {
-      examplePhotos: 3,
-      blocks: [
-        {
-          kind: "text",
-          heading: "Recycling Styrofoam",
-          body:
-            "Styrofoam (polystyrene) is lightweight and difficult to recycle. Many curbside programs do not accept it.",
-        },
-        {
-          kind: "text",
-          heading: "What to do",
-          body:
-            "Look for dedicated drop-off locations or periodic collection events. If none exist locally, avoid where possible and reuse clean pieces for packaging.",
-        },
-        { kind: "button", label: "Check Nearby Drop-off Centers", href: "/dropoff?q=styrofoam" },
-      ],
-    },
-
-    newspaper: {
-      examplePhotos: 3,
-      blocks: [
-        {
-          kind: "text",
-          heading: "Newspaper",
-          body:
-            "Most curbside programs accept clean and dry newspapers. Remove plastic sleeves and keep it free of food contamination.",
-        },
-        {
-          kind: "text",
-          heading: "Tips",
-          body:
-            "Bundle newspapers or place them in a paper bag. If your local program requires sorting, follow the city’s instructions.",
-        },
-        { kind: "button", label: "Find Nearby Recycling Info", href: "/dropoff?q=newspaper" },
-      ],
-    },
-
-    "office-paper": {
-      examplePhotos: 3,
-      blocks: [
-        {
-          kind: "text",
-          heading: "Office Paper",
-          body:
-            "Printer paper is commonly recyclable when clean. Staples are often fine, but avoid wax-coated or heavily laminated sheets.",
-        },
-        { kind: "button", label: "Find Paper Drop-off", href: "/dropoff?q=paper" },
-      ],
-    },
-  };
-
-  return map[slug] ?? null;
+function BigRowCard({ href, image, name }: { href: string; image: string; name: string }) {
+  return (
+    <Link
+      href={href}
+      className="w-full overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-neutral-200"
+    >
+      <div className="flex items-center gap-5 px-5 py-5">
+        <div className="flex h-[76px] w-[110px] items-center justify-center rounded-2xl bg-white">
+          <img src={image} alt={name} className="h-[72px] w-[96px] object-contain" />
+        </div>
+        <div className="text-[28px] font-semibold text-[var(--brand-900)]">{name}</div>
+      </div>
+    </Link>
+  );
 }
 
-export default function ItemDetailPage() {
-  const params = useParams();
-  const slug = typeof params.slug === "string" ? params.slug : "";
+function AccordionRow({ title, body }: { title: string; body: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-[rgba(46,63,58,.18)]">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between py-4 text-left"
+      >
+        <div className="text-[22px] font-semibold text-[var(--brand-900)]">{title}</div>
+        <div className="text-[22px] text-[var(--brand-900)] opacity-70">{open ? "⌃" : "⌄"}</div>
+      </button>
+      {open ? (
+        <div className="pb-4 text-[18px] leading-relaxed text-[rgba(46,63,58,.82)]">{body}</div>
+      ) : null}
+    </div>
+  );
+}
 
-  const item = useMemo(() => (slug ? findItemBySlug(slug) : null), [slug]);
-  const article = useMemo(() => (slug ? getArticle(slug) : null), [slug]);
+function Header() {
+  return (
+    <div className="bg-[var(--brand-900)] px-5 pt-10 pb-4 text-white">
+      <div className="text-[34px] font-semibold">Database</div>
+      <div className="mt-4 flex items-center gap-3">
+        <div className="flex h-12 flex-1 items-center gap-3 rounded-2xl bg-white px-4">
+          <span className="text-neutral-500">🔍</span>
+          <input
+            placeholder="Search"
+            className="w-full bg-transparent text-[18px] text-neutral-900 outline-none"
+          />
+        </div>
+        <button className="h-12 w-12 rounded-2xl bg-white text-[var(--brand-900)] shadow-sm" aria-label="Camera">
+          📷
+        </button>
+      </div>
+    </div>
+  );
+}
 
-  if (!slug || !item) {
+export default function DatabaseSlugPage() {
+  const params = useParams<{ slug: string }>();
+  const router = useRouter();
+  const slug = params.slug;
+
+  const savedSlugs = useSavedSlugs();
+
+  const mode = useMemo(() => (isCategorySlug(slug) ? "category" : "item"), [slug]);
+
+  // ========== Category (See All, 图1) ==========
+  if (mode === "category") {
+    const cat = getCategoryBySlug(slug);
+    if (!cat) return <main className="min-h-screen bg-neutral-100 p-6">Not found</main>;
+
+    const items = getItemsByCategory(cat.key);
+
     return (
-      <main className="px-4 py-6">
-        <div className="text-base font-semibold">Item not found</div>
-        <Link href="/database" className="mt-3 inline-block underline">
-          Back to Database
-        </Link>
+      <main className="min-h-screen bg-neutral-100" style={{ paddingBottom: "var(--bottom-nav-h, 88px)" }}>
+        <Header />
+
+        <div className="bg-white px-5 py-4 shadow-sm">
+          <Link href="/database" className="text-[22px] font-semibold text-[var(--brand-900)] opacity-80">
+            ‹ Back
+          </Link>
+        </div>
+
+        <div className="px-5 pt-6">
+          <div className="text-[34px] font-semibold text-[var(--brand-900)]">{cat.title}</div>
+          <div className="mt-5 space-y-5">
+            {items.map((it) => (
+              <BigRowCard key={it.slug} href={`/database/${it.slug}`} image={it.image} name={it.name} />
+            ))}
+          </div>
+        </div>
       </main>
     );
   }
 
+  // ========== Item detail (图2/3) ==========
+  const item = getItemBySlug(slug);
+  if (!item) return <main className="min-h-screen bg-neutral-100 p-6">Not found</main>;
+
+  const isOn = savedSlugs.includes(item.slug);
+
   return (
-    <main>
-      <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/90 backdrop-blur">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="text-base font-semibold">{item.title}</div>
-          <Link href="/database" className="text-sm font-medium underline">
-            Back
-          </Link>
-        </div>
-      </header>
+    <main className="min-h-screen bg-neutral-100" style={{ paddingBottom: "var(--bottom-nav-h, 88px)" }}>
+      <Header />
 
-      <div className="px-4 py-4">
-        <div className="text-xs text-neutral-500">{item.category}</div>
+      <div className="bg-white px-5 py-4 shadow-sm">
+        <Link href={`/database/category/${item.category}`} className="text-[22px] font-semibold text-[var(--brand-900)] opacity-80">
+          ‹ Back
+        </Link>
+      </div>
 
-        {/* ✅ 现在一定会显示，并且一定能点 */}
-        <div className="mt-3">
-          <SaveButton slug={slug} />
-        </div>
+      <div className="px-5 pt-6">
+        <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-neutral-200">
+          <div className="flex items-center gap-3 px-5 pt-5">
+            <div className="text-[32px] font-semibold text-[var(--brand-900)]">{item.name}</div>
 
-        {article ? (
-          <>
-            <div className="mt-4">
-              <div className="text-sm font-semibold">Example Photos</div>
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                {Array.from({ length: article.examplePhotos }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-square rounded-xl border border-neutral-200 bg-neutral-100"
-                  />
+            {/* ✅ 真正的 Saved 按钮 */}
+            <button
+              onClick={() => toggleSaved(item.slug)}
+              className={[
+                "ml-2 rounded-xl px-3 py-2 ring-1",
+                isOn ? "bg-[var(--brand-900)] text-white ring-[var(--brand-900)]" : "text-[var(--brand-900)] ring-neutral-200",
+              ].join(" ")}
+              aria-label="Bookmark"
+              title={isOn ? "Saved" : "Save"}
+            >
+              {isOn ? "★" : "☆"}
+            </button>
+
+            <button
+              onClick={() => router.back()}
+              className="ml-auto flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(46,63,58,.08)] text-[var(--brand-900)]"
+              aria-label="Close"
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <div className="px-5 pb-3 text-[22px] font-semibold text-[var(--brand-900)]">Example Photos</div>
+            <div className="bg-[rgba(120,160,155,.25)] px-5 py-4">
+              <div className="flex gap-4 overflow-x-auto">
+                {item.examplePhotos.map((src, idx) => (
+                  <div key={idx} className="h-[130px] w-[130px] shrink-0 overflow-hidden rounded-3xl bg-white">
+                    <img src={src} alt="" className="h-full w-full object-cover" />
+                  </div>
                 ))}
               </div>
             </div>
-
-            <div className="mt-4 space-y-3">
-              {article.blocks.map((b, idx) => {
-                if (b.kind === "button") {
-                  return (
-                    <Link
-                      key={idx}
-                      href={b.href}
-                      className="block w-full rounded-2xl bg-neutral-900 px-4 py-3 text-center text-sm font-medium text-white"
-                    >
-                      {b.label}
-                    </Link>
-                  );
-                }
-
-                return (
-                  <section
-                    key={idx}
-                    className="rounded-2xl border border-neutral-200 bg-white p-4"
-                  >
-                    <div className="text-sm font-semibold">{b.heading}</div>
-                    <p className="mt-2 text-sm leading-6 text-neutral-700">
-                      {b.body}
-                    </p>
-                  </section>
-                );
-              })}
-            </div>
-          </>
-        ) : (
-          <div className="mt-4 space-y-4">
-            <div className="rounded-2xl border border-neutral-200 bg-white p-4">
-              <div className="text-sm font-semibold">About this item</div>
-              <p className="mt-2 text-sm leading-6 text-neutral-700">
-                This item belongs to the {item.category} category. Recycling rules vary by location,
-                so check local guidelines or search for nearby drop-off options.
-              </p>
-            </div>
-
-            <Link
-              href={`/dropoff?q=${encodeURIComponent(item.title)}`}
-              className="block w-full rounded-2xl bg-neutral-900 px-4 py-3 text-center text-sm font-medium text-white"
-            >
-              📍 Find Nearby Drop-off
-            </Link>
           </div>
-        )}
+
+          <div className="px-5 py-5 text-[20px] leading-relaxed text-[rgba(46,63,58,.82)]">{item.intro}</div>
+
+          <div className="px-5 pb-4">
+            {item.sections.map((s) => (
+              <AccordionRow key={s.title} title={s.title} body={s.body} />
+            ))}
+          </div>
+        </div>
       </div>
     </main>
   );

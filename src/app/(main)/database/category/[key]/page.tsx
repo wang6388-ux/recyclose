@@ -1,56 +1,76 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import type { CategoryKey } from "@/data/databaseCategories";
-import { CATEGORY_ITEMS } from "@/data/databaseCategories";
+import { useMemo } from "react";
+import {
+  type CategoryKey,
+  getCategoryBySlug,
+  getItemsByCategory,
+} from "@/lib/databaseData";
+import { useSavedSlugs, toggleSaved } from "@/lib/savedDb";
 
-function normalizeKey(raw: string): CategoryKey | null {
-  const k = raw.trim().toLowerCase();
-  if (k === "paper") return "Paper";
-  if (k === "cardboard") return "Cardboard";
-  if (k === "plastic") return "Plastic";
-  if (k === "metal") return "Metal";
-  if (k === "glass") return "Glass";
-  if (k === "other") return "Other";
-  return null;
-}
 
-export default async function CategoryPage({
+export default function CategoryPage({
   params,
 }: {
-  params: Promise<{ key: string }>;
+  params: { key: string };
 }) {
-  const { key } = await params; // 关键：Next 16 里 params 需要 await
+  const key = params.key as CategoryKey;
 
-  const category = normalizeKey(key);
-  if (!category) return notFound();
+  const category = useMemo(() => getCategoryBySlug(key), [key]);
+  const items = useMemo(() => getItemsByCategory(key), [key]);
+  const saved = useSavedSlugs();
 
-  const items = CATEGORY_ITEMS[category];
-
-  return (
-    <main>
-      <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/90 backdrop-blur">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="text-base font-semibold">{category}</div>
-          <Link href="/database" className="text-sm font-medium underline">
-            Back
+  if (!category) {
+    return (
+      <main className="min-h-screen bg-white">
+        <div className="mx-auto w-full max-w-md px-4 pt-6">
+          <div className="text-[24px] font-semibold text-[var(--brand-900)]">
+            Category not found
+          </div>
+          <Link
+            href="/database"
+            className="mt-4 inline-block text-[var(--brand-900)] underline"
+          >
+            Back to Database
           </Link>
         </div>
-      </header>
+      </main>
+    );
+  }
 
-      <div className="px-4 py-4">
-        <div className="grid grid-cols-2 gap-3">
+  return (
+    <main className="min-h-screen bg-[#f5f5f5]">
+      <div className="mx-auto w-full max-w-md px-4 pt-6 pb-24">
+        <Link
+          href="/database"
+          className="inline-flex items-center gap-2 text-[22px] text-[var(--brand-900)]"
+        >
+          <span className="text-[26px]">‹</span> Back
+        </Link>
+
+        <div className="mt-5 text-[34px] font-semibold text-[var(--brand-900)]">
+          {category.title}
+        </div>
+
+        <div className="mt-5 space-y-4">
           {items.map((it) => (
             <Link
-            key={it.slug}
-            href={`/database/${it.slug}`}
-            className="block rounded-2xl border border-neutral-200 bg-white p-3"
-          >
-            <div className="aspect-square rounded-xl border border-neutral-200 bg-neutral-100" />
-            <div className="mt-2 text-sm font-semibold text-neutral-900">{it.title}</div>
-            <div className="mt-1 text-xs text-neutral-600">
-              {it.excerpt ?? "Tap to view details"}
-            </div>
-          </Link>
+              key={it.slug}
+              href={`/database/${it.slug}`}
+              className="block overflow-hidden rounded-3xl bg-white shadow ring-1 ring-black/5"
+            >
+              <div className="flex items-center gap-5 p-4">
+                <img
+                  src={it.image}
+                  alt={it.name}
+                  className="h-20 w-24 rounded-2xl object-cover"
+                />
+                <div className="text-[28px] font-semibold text-[var(--brand-900)]">
+                  {it.name}
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

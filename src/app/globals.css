@@ -4,6 +4,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --brand-900: #2E3F3A;
+  --brand-800: #364A44;
 }
 
 @theme inline {
@@ -20,8 +23,58 @@
   }
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+/* 图1风格 pin marker */
+.drop-pin {
+  width: 26px;
+  height: 26px;
+  background: var(--brand-900);
+  border-radius: 999px 999px 999px 0;
+  transform: rotate(-45deg);
+  position: relative;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+}
+
+.drop-pin::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 999px;
+  position: absolute;
+  top: 7px;
+  left: 7px;
+}
+
+/* 用户定位点 */
+.user-dot {
+  width: 12px;
+  height: 12px;
+  background: #2563eb;
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.95);
+}
+
+/* 让 mapbox logo/归因更贴近图1的左下角位置 */
+.mapboxgl-ctrl-bottom-left {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+.mapboxgl-ctrl-bottom-right {
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
