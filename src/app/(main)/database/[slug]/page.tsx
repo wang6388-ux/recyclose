@@ -75,7 +75,6 @@ export default function DatabaseSlugPage() {
 
   const mode = useMemo(() => (isCategorySlug(slug) ? "category" : "item"), [slug]);
 
-  // ========== Category (See All, 图1) ==========
   if (mode === "category") {
     const cat = getCategoryBySlug(slug);
     if (!cat) return <main className="min-h-screen bg-neutral-100 p-6">Not found</main>;
@@ -104,7 +103,6 @@ export default function DatabaseSlugPage() {
     );
   }
 
-  // ========== Item detail (图2/3) ==========
   const item = getItemBySlug(slug);
   if (!item) return <main className="min-h-screen bg-neutral-100 p-6">Not found</main>;
 
@@ -125,7 +123,6 @@ export default function DatabaseSlugPage() {
           <div className="flex items-center gap-3 px-5 pt-5">
             <div className="text-[32px] font-semibold text-[var(--brand-900)]">{item.name}</div>
 
-            {/* ✅ 真正的 Saved 按钮 */}
             <button
               onClick={() => toggleSaved(item.slug)}
               className={[
