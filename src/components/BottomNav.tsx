@@ -50,11 +50,8 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    // 1) 外层 fixed：真正负责贴底
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[80]">
-      {/* 2) 全宽背景层：铺满屏幕宽度 + safe-area 只用 env，不加额外像素 */}
       <div className="pointer-events-auto w-full bg-white/95 ring-1 ring-neutral-200 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-        {/* 3) 内容对齐层：和地图对齐 max-w-md */}
         <nav className="mx-auto w-full max-w-md px-3">
           <ul className="grid grid-cols-4 py-2.5">
             {TABS.map((t) => {
@@ -71,7 +68,6 @@ export default function BottomNav() {
                       isActive ? "text-[var(--brand-900)]" : "text-[rgba(46,63,58,.65)]"
                     )}
                   >
-                    {/* icon + active scale */}
                     <span
                       className={clsx(
                         "block transition-transform duration-150",
@@ -81,10 +77,8 @@ export default function BottomNav() {
                       <Icon className="h-[22px] w-[22px]" />
                     </span>
 
-                    {/* label closer to icon */}
                     <div className="mt-[2px] text-[11px] font-semibold leading-none">{t.label}</div>
 
-                    {/* underline */}
                     <div
                       className={clsx(
                         "mt-[6px] h-[3px] w-6 rounded-full",
