@@ -9,13 +9,11 @@ import { useSavedSlugs } from "@/lib/savedDb";
 export default function DatabaseHomePage() {
   const [q, setQ] = useState("");
 
-  // ✅ hook 必须在组件里
   const savedSlugs = useSavedSlugs();
 
   const savedItems = useMemo(() => {
     if (savedSlugs.length === 0) return [];
     const set = new Set(savedSlugs);
-    // 保持 savedSlugs 的顺序
     return savedSlugs.map((s) => ITEMS.find((it) => it.slug === s)).filter(Boolean) as DbItem[];
   }, [savedSlugs]);
 
@@ -35,7 +33,6 @@ export default function DatabaseHomePage() {
   return (
     <main className="min-h-screen bg-[#f5f5f5]" style={{ paddingBottom: "var(--bottom-nav-h, 88px)" }}>
       <div className="mx-auto w-full max-w-md">
-        {/* Header (深绿) */}
         <div className="bg-[var(--brand-900)] px-4 pt-10 pb-5 text-white">
           <div className="text-[40px] font-semibold">Database</div>
 
@@ -56,9 +53,7 @@ export default function DatabaseHomePage() {
           </div>
         </div>
 
-        {/* 内容区（浅灰背景） */}
         <div className="px-4 pt-6 pb-24">
-          {/* ✅ Saved 区块：放在最上方（像你说的功能要回来） */}
           {savedItems.length > 0 ? (
             <section className="mb-10">
               <div className="flex items-center justify-between">
