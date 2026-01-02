@@ -29,7 +29,6 @@ export default function DropoffDetailPage() {
     if (!token) return;
     if (!point) return;
 
-    // 防止重复 init
     if (mapRef.current) return;
 
     const host = mapHostRef.current;
@@ -59,7 +58,6 @@ export default function DropoffDetailPage() {
     el.style.border = "3px solid rgba(255,255,255,.95)";
     new mapboxgl.Marker({ element: el }).setLngLat([point.lng, point.lat]).addTo(map);
 
-    // resize 一下避免尺寸抖动
     const t = window.setTimeout(() => {
       try {
         map.resize();
@@ -120,7 +118,6 @@ export default function DropoffDetailPage() {
       `}</style>
 
       <div className={exiting ? "detail-exit" : "detail-enter"}>
-        {/* 顶部返回栏 */}
         <div className="sticky top-0 z-50 border-b border-neutral-100 bg-white/90 backdrop-blur">
           <div className="mx-auto max-w-md px-4 py-3">
             <button
@@ -134,7 +131,6 @@ export default function DropoffDetailPage() {
         </div>
 
         <div className="mx-auto max-w-md">
-          {/* Hero */}
           <div className="relative">
             <img src={point.heroImage} alt="" className="h-64 w-full object-cover" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/0 to-white/60" />
@@ -207,7 +203,6 @@ export default function DropoffDetailPage() {
               </div>
             </div>
 
-            {/* 给 BottomNav 留空间 */}
             <div style={{ height: "calc(72px + env(safe-area-inset-bottom))" }} />
           </div>
         </div>
