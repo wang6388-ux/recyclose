@@ -27,7 +27,6 @@
 
   const DEFAULT_CENTER = { lng: -122.3321, lat: 47.6062 };
 
-  // 你 BottomNav 的“固定高度”（不含 safe-area）
   const BOTTOM_NAV_H = 80;
 
   const FILTER_TAGS: readonly FilterTag[] = [
@@ -98,7 +97,6 @@
   export default function DropoffPage() {
     const router = useRouter();
 
-    // ✅ 只把 BottomNav 的“可见栏高度”算进布局，不要把 safe-area 算两遍
     const bottomNavOffset = `${BOTTOM_NAV_H}px`;
 
 
@@ -181,7 +179,6 @@
       }
     `;
 
-    // header 高度监听
     useEffect(() => {
       const el = headerRef.current;
       if (!el) return;
@@ -195,7 +192,6 @@
     const [webglOk, setWebglOk] = useState<boolean | null>(null);
     const [webglErr, setWebglErr] = useState<string | null>(null);
 
-    // map init + webgl check
     useEffect(() => {
       const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
       if (!token) {
@@ -266,7 +262,6 @@
       }
     }, []);
 
-    // 初次定位用户（右上角 pin 的 title）
     useEffect(() => {
       const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
       if (!token) {
@@ -304,13 +299,11 @@ useEffect(() => {
   const q = query.trim();
   if (!q) return;
 
-  // ✅ 搜索进入列表模式
   setActiveId(null);
   setPreviewOpen(false);
   setSheetSnap("half");
 }, [query]);
 
-    // 过滤列表
     const filteredPoints = useMemo(() => {
       let base = ALL_POINTS;
 
@@ -354,7 +347,6 @@ return base
       return filteredPoints.map((x) => ({ ...x.p, distanceMeters: x.dist }));
     }, [filteredPoints]);
 
-    // markers：地图显示全部 ALL_POINTS
     useEffect(() => {
       const map = mapRef.current;
       if (!map) return;
@@ -380,13 +372,8 @@ return base
   setActiveId(p.id);
   setPreviewOpen(true);
 
-  // ✅ 单点预览模式：隐藏 bottom list
   setSheetSnap("hidden");
-
-  // ✅ 不要在单点模式里滚动 list（因为 list 被你隐藏了）
-  // requestAnimationFrame(() => {
-  //   itemRefs.current[p.id]?.scrollIntoView({ behavior: "smooth", block: "center" });
-  // });
+          
 
   map.easeTo({
     center: [p.lng, p.lat],
@@ -401,7 +388,6 @@ return base
       }
     }, [headerH]);
 
-    // active marker 高亮
     useEffect(() => {
       for (const [id, obj] of Object.entries(markersRef.current)) {
         if (id === activeId) obj.inner.classList.add("active");
@@ -413,7 +399,6 @@ return base
       router.push(`/dropoff/${id}`);
     }
 
-    // 用地图中心作为 baseLoc
     async function useMapCenterAsBase() {
       const map = mapRef.current;
       const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -426,7 +411,7 @@ return base
       setBaseLoc({ lng, lat });
 setActiveId(null);
 setPreviewOpen(false);
-setSheetSnap("half"); // ✅ 调出列表
+setSheetSnap("half"); 
 
 
       try {
@@ -437,7 +422,6 @@ setSheetSnap("half"); // ✅ 调出列表
       }
     }
 
-    // 右上角 pin：定位 + 设为 baseLoc
     async function locateUser() {
       const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
       const map = mapRef.current;
@@ -454,7 +438,7 @@ setSheetSnap("half"); // ✅ 调出列表
 setBaseLoc({ lng, lat });
 setActiveId(null);
 setPreviewOpen(false);
-setSheetSnap("half"); // ✅ 调出列表
+setSheetSnap("half"); 
 
 
           try {
@@ -490,7 +474,6 @@ setSheetSnap("half"); // ✅ 调出列表
       >
         <style jsx global>{mapboxFixCss}</style>
 
-        {/* Header */}
         <header ref={headerRef} className="absolute top-0 left-0 right-0 z-30">
           <div className="bg-[var(--brand-900)] px-4 pt-4 pb-3 text-white shadow">
             <div className="flex items-start justify-between gap-3">
@@ -535,7 +518,6 @@ setSheetSnap("half"); // ✅ 调出列表
           </div>
         </header>
 
-        {/* ✅ Map area：底部让出 bottom-nav-h */}
         <div
           className="absolute left-0 right-0"
           style={{
@@ -577,7 +559,6 @@ setSheetSnap("half"); // ✅ 调出列表
               </button>
             </div>
 
-            {/* ✅ preview card：抬高到 nav 上方 */}
             {activePoint && previewOpen ? (
               <div
                 className="absolute left-0 right-0 z-[65] px-3"
@@ -627,7 +608,6 @@ setSheetSnap("half"); // ✅ 调出列表
           </div>
         </div>
 
-        {/* ✅ Bottom sheet：站在 bottom-nav-h 上方 */}
         <BottomSheet
           title={<span className="text-[16px] font-semibold">{listPoints.length} Results Found</span>}
           snap={sheetSnap}
