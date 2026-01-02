@@ -18,7 +18,6 @@ function writeSaved(slugs: string[]) {
 }
 
 export default function SaveButton({ slug }: { slug: string }) {
-  // ✅ 初始值用 lazy initializer 读取 localStorage（不是 effect）
   const [savedSlugs, setSavedSlugs] = useState<string[]>(() => readSaved());
 
   const saved = useMemo(() => savedSlugs.includes(slug), [savedSlugs, slug]);
