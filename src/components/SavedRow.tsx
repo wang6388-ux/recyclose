@@ -6,17 +6,15 @@ import { listItemsBySlugs } from "@/data/databaseCategories";
 
 const KEY = "recyclose:saved-slugs";
 
-// ✅ 稳定引用：React 19 要求 server snapshot cached
 const EMPTY: string[] = [];
 
-// ✅ 关键：缓存上一次结果，避免每次返回新数组导致无限更新
 let lastRaw = "";
 let lastParsed: string[] = EMPTY;
 
 function readSavedStable(): string[] {
   try {
     const raw = localStorage.getItem(KEY) ?? "";
-    if (raw === lastRaw) return lastParsed; // 内容没变，返回同一引用
+    if (raw === lastRaw) return lastParsed; 
 
     lastRaw = raw;
 
@@ -37,7 +35,6 @@ function readSavedStable(): string[] {
 
 function subscribe(callback: () => void) {
   const handler = (e?: Event) => {
-    // storage 事件里也会触发，但我们统一 callback
     callback();
   };
 
@@ -53,7 +50,7 @@ export default function SavedRow() {
   const slugs = useSyncExternalStore(
     subscribe,
     readSavedStable,
-    () => EMPTY // ✅ stable server snapshot
+    () => EMPTY 
   );
 
   const items = listItemsBySlugs(slugs);
