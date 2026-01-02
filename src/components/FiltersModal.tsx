@@ -9,7 +9,7 @@ export const DEFAULT_FILTERS: FiltersState = {
   serviceType: "any",
   pickupOnly: false,
   categories: new Set<string>(),
-  radius: "any", // ✅ 你想“默认永远搜得到”，就用 any；不想就保留 40miles
+  radius: "any", 
 };
 
 
@@ -19,10 +19,10 @@ export type FilterTag = {
 };
 
 export type FiltersState = {
-  serviceType: ServiceType;   // recycle / donation / any
-  pickupOnly: boolean;        // 是否支持上门取
-  categories: Set<string>;    // category keys
-  radius: RadiusKey;          // 6blocks/1mile/5miles/40miles
+  serviceType: ServiceType;   
+  pickupOnly: boolean;        
+  categories: Set<string>;    
+  radius: RadiusKey;          
 };
 
 export default function FiltersModal({
@@ -67,16 +67,13 @@ export default function FiltersModal({
 
   return (
     <div className="fixed inset-0 z-[80]">
-      {/* backdrop */}
       <button
         className="absolute inset-0 bg-black/35"
         aria-label="Close filters"
         onClick={onClose}
       />
 
-      {/* modal */}
       <div className="absolute left-1/2 top-[92px] w-[92%] max-w-md -translate-x-1/2 rounded-3xl bg-white shadow-2xl">
-        {/* header */}
         <div className="flex items-center justify-between px-6 pt-6">
           <div className="text-[28px] font-semibold text-[var(--brand-900)]">
             Filters
@@ -92,9 +89,7 @@ export default function FiltersModal({
           </button>
         </div>
 
-        {/* body (scrollable) */}
         <div className="max-h-[72vh] overflow-y-auto px-6 pb-[96px]">
-          {/* Service Type */}
           <div className="mt-6">
             <div className="text-[22px] font-semibold text-[var(--brand-900)]">
               Service Type
@@ -139,17 +134,14 @@ export default function FiltersModal({
             </div>
           </div>
 
-          {/* Radius */}
           <div className="mt-8">
             <div className="text-[22px] font-semibold text-[var(--brand-900)]">
               Range
             </div>
 
-            {/* Radius */}
 <div className="mt-8">
   <div className="text-[22px] font-semibold text-[var(--brand-900)]">Range</div>
 
-  {/* ✅ 4 个按钮（包含 All），改成 grid-cols-2 更稳，不挤 */}
   <div className="mt-4 grid grid-cols-2 gap-3">
     {[
       { key: "any", label: "All" },
@@ -189,7 +181,6 @@ export default function FiltersModal({
     </button>
   </div>
 
-  {/* 可选：给用户解释一下 any 的含义 */}
   <div className="mt-2 text-[13px] text-[rgba(46,63,58,.65)]">
     Tip: Search will show all matching results even if you are far away.
   </div>
@@ -197,7 +188,6 @@ export default function FiltersModal({
 
           </div>
 
-          {/* Category */}
           <div className="mt-8">
             <div className="text-[22px] font-semibold text-[var(--brand-900)]">
               Category
@@ -225,7 +215,6 @@ export default function FiltersModal({
           </div>
         </div>
 
-        {/* footer pinned */}
         <div className="absolute bottom-0 left-0 right-0 border-t bg-white px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <button
